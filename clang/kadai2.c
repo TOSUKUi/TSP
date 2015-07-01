@@ -118,13 +118,15 @@ int *func_nearestAddition(int *route,int *unusedNode,City city){
     sum_unusedNode = 0;
     minArc.cost = 30;
     flag=0;
+
+    //一番最初だけ、PATHの初期値から見て最もコストの低いノードを[1]番目に入れるため、カウント変数を見る。(その後初期値をいじられるのを防ぐため)
     if(count > 0){
       for(j=1;j<city.numCity;j++){
-	//あるj番目のNodeがunusedNodeでなかったら(つまりすでにpathの中に入っていたら)そのNodeから見て最も近いunusedNodeを選択し、それをArcの大小比較をし、一番短かった場合保存する
+	//あるj番目のNodeがunusedNodeでなかったら(つまりすでにpathの中に入っていたら)そのNodeから見て最もコストの低いunusedNodeへのアークを選択する
 	if(!unusedNode[j]){
 	  if((miniNodeThanCurrent = func_getMinimumNextPath(j,city,route,unusedNode)) >= 0){
 	    
-	    //仮に、選ばれた辺が最もコストが低かった場合、そこを選ぶ
+	    //getMinimumNextPath関数で取り出したアーク全てで大小比較を繰り返し、もっともコストの低いアークを保存
 	    if(city.distanceMatrix[j][miniNodeThanCurrent] < minArc.cost){
 	      printf("miniNodeThanCurrent = %d From %d\n",miniNodeThanCurrent,j);
 	      minArc.edge[0] = j;
@@ -135,6 +137,7 @@ int *func_nearestAddition(int *route,int *unusedNode,City city){
 	  }
 	}
       }
+      //ルートの一番目に0番目から見て最もコストの低いノードを代入する
       index = func_getIndex(route,minArc.edge[0],city.numCity);
       printf("index = %d\n",index);
       func_insert(route,city.numCity,minArc.edge[1],index);
